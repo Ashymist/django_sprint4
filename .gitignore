@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.codex
 
 # C extensions
 *.so
@@ -113,6 +114,7 @@ venv.bak/
 # Spyder project settings
 .spyderproject
 .spyproject
+.codex
 
 # Rope project settings
 .ropeproject
