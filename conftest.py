@@ -10,5 +10,4 @@ for path in (PROJECT_ROOT, PROJECT_ROOT / 'blogicum'):
     if path_str not in sys.path:
         sys.path.insert(0, path_str)
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'blogicum.blogicum.settings')
-
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'blogicum.settings')
