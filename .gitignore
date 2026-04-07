@@ -115,6 +115,7 @@ venv.bak/
 .spyderproject
 .spyproject
 .codex
+.claude
 
 # Rope project settings
 .ropeproject

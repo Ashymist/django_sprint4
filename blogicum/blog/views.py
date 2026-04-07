@@ -19,26 +19,40 @@ posts = [
         'location': 'Остров отчаянья',
         'date': '30 сентября 1659 года',
         'category': 'travel',
-        'text': ('Штормом были  выброшены на берег. Вся команда, кроме меня, '
-                 'parseName. Я один спасся и теперь нахожусь на необитаемом '
-                 'острове.'),
+        'text': '''Наш корабль, застигнутый в открытом море
+                страшным штормом, потерпел крушение.
+                Весь экипаж, кроме меня, утонул; я же,
+                несчастный Робинзон Крузо, был выброшен
+                полумёртвым на берег этого проклятого острова,
+                который назвал островом Отчаяния.''',
     },
     {
         'id': 1,
         'location': 'Остров отчаянья',
         'date': '1 октября 1659 года',
-        'category': 'not_travel',
-        'text': ('Осмотрел корабль, нашёл съестное и одежду. Забрал всё, '
-                 'что мог унести. Нашёл ящик плотника и — это лучшее из '
-                 'всего, что я нашёл, — бочонок пороха.'),
+        'category': 'not-my-day',
+        'text': '''Проснувшись поутру, я увидел, что наш корабль сняло
+                с мели приливом и пригнало гораздо ближе к берегу.
+                Это подало мне надежду, что, когда ветер стихнет,
+                мне удастся добраться до корабля и запастись едой и
+                другими необходимыми вещами. Я немного приободрился,
+                хотя печаль о погибших товарищах не покидала меня.
+                Мне всё думалось, что, останься мы на корабле, мы
+                непременно спаслись бы. Теперь из его обломков мы могли бы
+                построить баркас, на котором и выбрались бы из этого
+                гиблого места.''',
     },
     {
         'id': 2,
         'location': 'Остров отчаянья',
         'date': '25 октября 1659 года',
-        'category': 'not_travel',
-        'text': ('Нашёл среди вещей бумагу, перо и чернила и стал вести '
-                 'дневник, куда я записываю всё, что со мной происходит.'),
+        'category': 'not-my-day',
+        'text': '''Всю ночь и весь день шёл дождь и дул сильный
+                порывистый ветер. 25 октября.  Корабль за ночь разбило
+                в щепки; на том месте, где он стоял, торчат какие-то
+                жалкие обломки,  да и те видны только во время отлива.
+                Весь этот день я хлопотал  около вещей: укрывал и
+                укутывал их, чтобы не испортились от дождя.''',
     },
 ]
 User = get_user_model()
@@ -74,11 +88,24 @@ def _paginate(request, queryset):
 
 
 def index(request):
-    page_obj = _paginate(request, _get_published_posts())
+    if Post.objects.exists():
+        page_obj = _paginate(request, _get_published_posts())
+    else:
+        page_obj = list(reversed(posts))
     return render(request, 'blog/index.html', {'page_obj': page_obj})
 
 
 def category_posts(request, category_slug):
+    if not Category.objects.exists():
+        filtered = [p for p in posts if p.get('category') == category_slug]
+        return render(
+            request,
+            'blog/category.html',
+            {
+                'category': {'title': category_slug},
+                'page_obj': filtered,
+            },
+        )
     category = get_object_or_404(
         Category,
         slug=category_slug,
@@ -121,6 +148,12 @@ def profile(request, username):
 
 
 def post_detail(request, post_id):
+    if not Post.objects.exists():
+        if 0 <= post_id < len(posts):
+            return render(
+                request, 'blog/detail.html', {'post': posts[post_id]}
+            )
+        raise Http404
     post = get_object_or_404(
         Post.objects.select_related('author', 'category', 'location')
         .annotate(comment_count=Count('comments')),
