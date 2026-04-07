@@ -202,4 +202,6 @@ def registration(request):
     if form.is_valid():
         form.save()
         return redirect('login')
-    return render(request, 'registration/registration_form.html', {'form': form})
+    return render(
+        request, 'registration/registration_form.html', {'form': form}
+    )
