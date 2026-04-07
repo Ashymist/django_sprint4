@@ -2,6 +2,8 @@ import os
 import sys
 from pathlib import Path
 
+import pytest
+
 PROJECT_ROOT = Path(__file__).resolve().parent
 
 # Ensure Django package imports work even when pytest runs from a different
@@ -12,3 +14,8 @@ for path in (PROJECT_ROOT, PROJECT_ROOT / 'blogicum'):
         sys.path.insert(0, path_str)
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'blogicum.settings')
+
+
+@pytest.fixture(autouse=True)
+def enable_db_access_for_all_tests(db):
+    pass
