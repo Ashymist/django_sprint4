@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}
+  Лента записей
+{% endblock %}
+{% block content %}
+  <h1 class="mb-5">Лента записей</h1>
+  {% for post in page_obj %}
+    <article class="mb-5">
+      {% if post.author %}
+        {% include "includes/post_card.html" %}
+      {% else %}
+        <div class="col d-flex justify-content-center">
+          <div class="card" style="width: 40rem;">
+            <div class="card-body">
+              <h5 class="card-title">{{ post.location }}</h5>
+              <h6 class="card-subtitle mb-2 text-muted"><small>{{ post.date }}</small></h6>
+              <p class="card-text">{{ post.text|truncatewords:10 }}</p>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    </article>
+    {% if not forloop.last %}<hr>{% endif %}
+  {% endfor %}
+  {% include "includes/paginator.html" %}
+{% endblock %}
